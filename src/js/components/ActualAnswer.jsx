@@ -4,11 +4,10 @@ const Answer = () => {
   const [inputValue, setInputValue] = useState("");
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [userName] = useState("your_username"); // Change this to your desired username
+  const [userName] = useState("your_username");
 
   const API_BASE = "https://playground.4geeks.com/todo";
 
-  // Create user if doesn't exist and fetch todos on component mount
   useEffect(() => {
     const initializeUser = async () => {
       try {
@@ -26,7 +25,6 @@ const Answer = () => {
           });
         }
 
-        // Fetch todos after ensuring user exists
         fetchTodos();
       } catch (error) {
         console.error("Error initializing user:", error);
@@ -38,7 +36,6 @@ const Answer = () => {
     initializeUser();
   }, [userName]);
 
-  // Fetch todos from API
   const fetchTodos = () => {
     fetch(`${API_BASE}/users/${userName}`)
       .then((resp) => {
@@ -55,7 +52,6 @@ const Answer = () => {
       });
   };
 
-  // Add todo using your template
   const addTodo = () => {
     if (inputValue.trim() !== "") {
       setLoading(true);
@@ -72,12 +68,11 @@ const Answer = () => {
         },
       })
         .then((resp) => {
-          console.log(resp.ok); // Será true si la respuesta es exitosa
-          console.log(resp.status); // El código de estado 201, 300, 400, etc.
-          return resp.json(); // Intentará parsear el resultado a JSON y retornará una promesa donde puedes usar .then para seguir con la lógica
+          console.log(resp.ok);
+          console.log(resp.status);
+          return resp.json();
         })
         .then((data) => {
-          // Aquí es donde debe comenzar tu código después de que finalice la búsqueda
           console.log(data); // Esto imprimirá en la consola el objeto exacto recibido del servidor
           setInputValue("");
           fetchTodos(); // Refresh the list
@@ -91,7 +86,6 @@ const Answer = () => {
     }
   };
 
-  // Delete todo from API and refresh list
   const deleteTodo = (id) => {
     setLoading(true);
     fetch(`${API_BASE}/todos/${id}`, {
@@ -101,7 +95,7 @@ const Answer = () => {
         console.log(resp.ok);
         console.log(resp.status);
         if (resp.ok) {
-          fetchTodos(); // Refresh the list only if successful
+          fetchTodos();
         }
         setLoading(false);
       })
@@ -114,14 +108,14 @@ const Answer = () => {
   // Clear all todos from server
   const clearAllTodos = () => {
     setLoading(true);
-    // Delete user (which deletes all their todos) and recreate
+
     fetch(`${API_BASE}/users/${userName}`, {
       method: "DELETE",
     })
       .then((resp) => {
         console.log(resp.ok);
         console.log(resp.status);
-        // Recreate user
+
         return fetch(`${API_BASE}/users/${userName}`, {
           method: "POST",
           headers: {
